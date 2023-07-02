@@ -6,7 +6,11 @@ import css from './app.module.css';
 import { useState, useEffect } from 'react';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState(() => {
+    const contactsFromLS = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contactsFromLS);
+    return parsedContacts || [];
+  });
   const [filter, setFilter] = useState('');
 
   const addContact = (addedName, addedNumber) => {
@@ -47,15 +51,6 @@ export const App = () => {
       prevContacts.filter(contact => contact.id !== idToRemove)
     );
   };
-
-  useEffect(() => {
-    const contactsFromLS = localStorage.getItem('contacts');
-    if (contactsFromLS) {
-      const parsedContacts = JSON.parse(contactsFromLS);
-      setContacts(parsedContacts);
-    }
-    return;
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contacts));
